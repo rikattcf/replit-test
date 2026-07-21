@@ -3,13 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "installCommand": "npm install",
-  
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs22.x" 
-    }
-  },
-
   "headers": [
     {
       "source": "/(.*)",
