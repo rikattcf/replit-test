@@ -1,0 +1,329 @@
+---
+/**
+ * Homepage — fetches the "home" story from Storyblok.
+ * Falls back to a hard-coded demo page when Storyblok data is unavailable,
+ * making local development easy before you add content in Storyblok.
+ */
+import { useStoryblokApi } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import Layout from '@/layouts/Layout.astro';
+
+// --- Attempt to load from Storyblok ---
+let storyData: any = null;
+let useDemo = false;
+
+try {
+  const storyblokApi = useStoryblokApi();
+  const { data } = await storyblokApi.get('cdn/stories/home', {
+    version: import.meta.env.IS_PRODUCTION === 'true' ? 'published' : 'draft',
+    resolve_links: 'url',
+  });
+  storyData = data.story;
+} catch (_e) {
+  // No Storyblok content yet — render the demo page
+  useDemo = true;
+}
+---
+
+<Layout
+  title={storyData?.content?.seo_title ?? 'Dexcom | Continuous Glucose Monitoring'}
+  description={storyData?.content?.seo_description ?? 'Better manage your diabetes with Dexcom CGM technology.'}
+>
+  {storyData
+    ? <StoryblokComponent blok={storyData.content} />
+    : (
+      <!-- ============================================================
+           DEMO HOMEPAGE — shown when no Storyblok content exists yet
+           ============================================================ -->
+      <div class="demo-page">
+
+        <!-- Hero -->
+        <section class="hero hero--img-right" aria-label="Better manage your diabetes">
+          <div class="container hero__inner" style="--img-width:50%; --text-width:50%">
+            <div class="hero__text order-1">
+              <span class="eyebrow">Continuous Glucose Monitoring</span>
+              <h1 class="hero__title">Better manage your <span class="green">Diabetes</span> with Dexcom</h1>
+              <div class="rich-text hero__details">
+                <p>Find out how Dexcom can help you better manage your condition with real-time glucose readings, giving you greater control over your health every single day.</p>
+              </div>
+              <div class="hero__ctas">
+                <a href="/buy"          class="cta-btn cta-btn--solid  cta-btn--lg">Buy now</a>
+                <a href="/products/g7"  class="cta-btn cta-btn--outline cta-btn--lg">Learn more</a>
+              </div>
+            </div>
+            <div class="hero__media order-2">
+              <div class="hero__media-wrap demo-media-placeholder">
+                <div class="demo-media-inner">
+                  <svg width="80" height="80" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+                    <rect width="80" height="80" rx="12" fill="#E8F7EE"/>
+                    <path d="M40 20C29 20 20 29 20 40s9 20 20 20 20-9 20-20-9-20-20-20zm0 36c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16z" fill="#00AA55"/>
+                    <circle cx="40" cy="40" r="8" fill="#00AA55"/>
+                  </svg>
+                  <p style="margin-top:12px; color:#00AA55; font-weight:700; font-size:14px">Hero image here</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Text Area: centred intro -->
+        <section class="text-area section" style="background-color: var(--color-gray-50)">
+          <div class="container">
+            <div class="text-area__inner" style="max-width:760px; margin-inline:auto; text-align:center">
+              <span class="eyebrow">Why Dexcom</span>
+              <h2 class="text-area__title">Real-time glucose data. Real-world results.</h2>
+              <div class="rich-text text-area__content">
+                <p>Dexcom CGM systems send continuous glucose readings to your smartphone, helping you make smarter decisions about food, activity, and insulin — without the fingersticks.</p>
+              </div>
+              <div class="text-area__ctas" style="justify-content:center">
+                <a href="/products" class="cta-btn cta-btn--solid  cta-btn--md">See all products</a>
+                <a href="/how-it-works" class="cta-btn cta-btn--outline cta-btn--md">How it works</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Grid: 3 cards -->
+        <section class="grid-section section" aria-label="Our products">
+          <div class="container">
+            <div class="grid-section__header">
+              <span class="eyebrow">Our range</span>
+              <h2 class="grid-section__heading">The right solution for you</h2>
+            </div>
+            <div class="grid-layout" style="--cols:3; --col-min:min(100%, 300px)">
+
+              <!-- Card 1 -->
+              <article class="card card--bordered">
+                <div class="card__media demo-media-placeholder" style="aspect-ratio:16/9">
+                  <div class="demo-media-inner">
+                    <span style="font-size:12px; color:#00AA55; font-weight:700">Dexcom G7 image</span>
+                  </div>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title">Dexcom G7</h3>
+                  <div class="rich-text card__details">
+                    <p>Our smallest, most accurate sensor yet. Get real-time readings every 5 minutes.</p>
+                  </div>
+                  <div class="card__ctas">
+                    <a href="/products/g7" class="cta-btn cta-btn--outline cta-btn--sm">Learn more</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 2 -->
+              <article class="card card--bordered">
+                <div class="card__media demo-media-placeholder" style="aspect-ratio:16/9">
+                  <div class="demo-media-inner">
+                    <span style="font-size:12px; color:#00AA55; font-weight:700">Dexcom G6 image</span>
+                  </div>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title">Dexcom G6</h3>
+                  <div class="rich-text card__details">
+                    <p>Proven CGM technology. Automatic alerts and a 10-day wear sensor.</p>
+                  </div>
+                  <div class="card__ctas">
+                    <a href="/products/g6" class="cta-btn cta-btn--outline cta-btn--sm">Learn more</a>
+                  </div>
+                </div>
+              </article>
+
+              <!-- Card 3 -->
+              <article class="card card--bordered">
+                <div class="card__media demo-media-placeholder" style="aspect-ratio:16/9">
+                  <div class="demo-media-inner">
+                    <span style="font-size:12px; color:#00AA55; font-weight:700">Apps image</span>
+                  </div>
+                </div>
+                <div class="card__body">
+                  <h3 class="card__title">Dexcom Apps</h3>
+                  <div class="rich-text card__details">
+                    <p>Monitor glucose on your iPhone, Apple Watch, Android, or smart TV.</p>
+                  </div>
+                  <div class="card__ctas">
+                    <a href="/products/apps" class="cta-btn cta-btn--outline cta-btn--sm">Explore apps</a>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Hero 2: image left -->
+        <section class="hero hero--img-left" aria-label="Healthcare professionals">
+          <div class="container hero__inner" style="--img-width:50%; --text-width:50%">
+            <div class="hero__media order-1">
+              <div class="hero__media-wrap demo-media-placeholder">
+                <div class="demo-media-inner">
+                  <span style="font-size:12px; color:#00AA55; font-weight:700">HCP image</span>
+                </div>
+              </div>
+            </div>
+            <div class="hero__text order-2">
+              <span class="eyebrow">For Healthcare Professionals</span>
+              <h2 class="hero__title">Clinical-grade <span class="green">accuracy</span> your patients can rely on</h2>
+              <div class="rich-text hero__details">
+                <p>Dexcom CGM provides clinically validated glucose data to help guide therapy decisions and improve patient outcomes.</p>
+              </div>
+              <div class="hero__ctas">
+                <a href="/hcp" class="cta-btn cta-btn--solid cta-btn--lg">HCP resources</a>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Grid: 2 support cards -->
+        <section class="grid-section section" style="background-color: var(--color-gray-50)" aria-label="Support">
+          <div class="container">
+            <div class="grid-section__header">
+              <span class="eyebrow">We're here for you</span>
+              <h2 class="grid-section__heading">Support every step of the way</h2>
+            </div>
+            <div class="grid-layout" style="--cols:2; --col-min:min(100%, 400px)">
+
+              <article class="card card--bordered">
+                <div class="card__body">
+                  <h3 class="card__title">Getting Started</h3>
+                  <div class="rich-text card__details">
+                    <p>New to CGM? Our step-by-step guides walk you through setup, wear, and your first readings.</p>
+                  </div>
+                  <div class="card__ctas">
+                    <a href="/support/getting-started" class="cta-btn cta-btn--solid cta-btn--sm">Get started</a>
+                  </div>
+                </div>
+              </article>
+
+              <article class="card card--bordered">
+                <div class="card__body">
+                  <h3 class="card__title">Help Centre</h3>
+                  <div class="rich-text card__details">
+                    <p>Browse our FAQs, troubleshooting guides, and contact our dedicated UK support team.</p>
+                  </div>
+                  <div class="card__ctas">
+                    <a href="/support/help" class="cta-btn cta-btn--outline cta-btn--sm">Visit Help Centre</a>
+                  </div>
+                </div>
+              </article>
+
+            </div>
+          </div>
+        </section>
+
+        <!-- Text Area: left-aligned with disclaimer -->
+        <section class="text-area section">
+          <div class="container">
+            <div class="text-area__inner" style="max-width:760px">
+              <span class="eyebrow">Important information</span>
+              <h2 class="text-area__title">Indications for use</h2>
+              <div class="rich-text text-area__content">
+                <p>The Dexcom G7 CGM system is indicated for use as a replacement for fingerstick blood glucose testing for diabetes management. Always read the label and instructions for use.</p>
+                <p>Dexcom is a registered trademark of Dexcom, Inc. in the United States and/or other countries. For UK use only.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    )
+  }
+</Layout>
+
+<style>
+/* Inline styles for demo placeholders */
+.green { color: var(--color-brand-green); }
+
+.demo-media-placeholder {
+  background: var(--color-brand-green-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.demo-media-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Re-use shared component styles via global CSS classes */
+/* (All .hero, .card, .grid-*, .cta-btn etc. come from component <style> blocks
+   which in Astro are scoped; here we replicate only what the demo page needs
+   as non-scoped global overrides) */
+.hero { background-color: var(--color-gray-50); overflow: hidden; }
+.hero__inner {
+  display: grid;
+  grid-template-columns: var(--text-width, 50%) var(--img-width, 50%);
+  gap: var(--space-12);
+  align-items: center;
+  padding-block: var(--space-16);
+}
+.hero__text  { display:flex; flex-direction:column; gap:var(--space-6); }
+.hero__title { color: var(--color-brand-black); }
+.hero__details { color: var(--color-gray-600); font-size: var(--font-size-lg); line-height: var(--line-height-loose); }
+.hero__ctas  { display:flex; flex-wrap:wrap; gap:var(--space-4); margin-top: var(--space-2); }
+.hero__media { position:relative; }
+.hero__media-wrap {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4/3;
+  min-height: 280px;
+}
+.order-1 { order:1; }
+.order-2 { order:2; }
+
+.cta-btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  font-family: var(--font-sans); font-weight: var(--font-weight-bold);
+  line-height:1; white-space:nowrap;
+  border-radius: var(--radius-full); border: 2px solid transparent;
+  cursor:pointer; text-decoration:none;
+  transition: background var(--transition-fast), color var(--transition-fast),
+    border-color var(--transition-fast), transform var(--transition-fast);
+}
+.cta-btn--sm  { font-size: var(--font-size-xs);  padding: .5em 1.25em; }
+.cta-btn--md  { font-size: var(--font-size-sm);  padding: .7em 1.75em; }
+.cta-btn--lg  { font-size: var(--font-size-base); padding: .8em 2em; }
+.cta-btn--solid   { background: var(--color-brand-green); border-color: var(--color-brand-green); color:#fff; }
+.cta-btn--solid:hover { background: var(--color-brand-green-dark); border-color: var(--color-brand-green-dark); transform: translateY(-1px); }
+.cta-btn--outline { background: #fff; border-color: var(--color-brand-green); color: var(--color-brand-green); }
+.cta-btn--outline:hover { background: var(--color-brand-green-light); transform: translateY(-1px); }
+
+.grid-section__header { margin-bottom: var(--space-10); text-align:center; }
+.grid-section__heading { font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl)); color: var(--color-brand-black); }
+.grid-layout {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--col-min, 300px), 1fr));
+  gap: var(--space-8);
+}
+@media (min-width:900px) { .grid-layout { grid-template-columns: repeat(var(--cols, 3), 1fr); } }
+@media (max-width:768px) {
+  .hero__inner { grid-template-columns: 1fr !important; gap: var(--space-8); padding-block: var(--space-12); }
+  .hero__text, .hero__media { order: unset !important; }
+  .hero__media-wrap { aspect-ratio: 16/9; border-radius: var(--radius-lg); min-height:unset; }
+}
+@media (max-width:640px) {
+  .grid-layout { grid-template-columns: 1fr !important; }
+}
+
+.card {
+  display:flex; flex-direction:column;
+  background: var(--color-brand-white);
+  border-radius: var(--radius-lg);
+  overflow:hidden; height:100%;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+.card--bordered { border:1px solid var(--color-gray-200); box-shadow: var(--shadow-card); }
+.card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+.card__media { width:100%; overflow:hidden; flex-shrink:0; position:relative; background: var(--color-gray-100); }
+.card__body  { display:flex; flex-direction:column; gap: var(--space-4); padding: var(--space-6); flex:1; }
+.card__title { font-size: var(--font-size-xl); font-weight: var(--font-weight-bold); color: var(--color-brand-black); }
+.card__details { color: var(--color-gray-600); font-size: var(--font-size-sm); line-height: var(--line-height-normal); flex:1; }
+.card__ctas { display:flex; flex-wrap:wrap; gap: var(--space-3); margin-top:auto; padding-top: var(--space-2); }
+
+.text-area__inner { display:flex; flex-direction:column; gap: var(--space-6); width:100%; }
+.text-area__title { font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl)); line-height: var(--line-height-snug); color: var(--color-brand-black); }
+.text-area__content { color: var(--color-gray-600); font-size: var(--font-size-lg); line-height: var(--line-height-loose); }
+.text-area__ctas { display:flex; flex-wrap:wrap; gap: var(--space-4); }
+</style>

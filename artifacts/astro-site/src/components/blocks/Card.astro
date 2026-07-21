@@ -1,0 +1,228 @@
+---
+/**
+ * Card — generic media card for use inside Grid.
+ *
+ * Props
+ *   imageUrl      : string           — image src (optional if videoUrl set)
+ *   imageAlt      : string           — alt text
+ *   videoUrl      : string           — external video URL (YouTube embed, mp4, etc.)
+ *   mediaPosition : 'top'|'bottom'   — whether media appears above or below body, default 'top'
+ *   title         : string           — card title
+ *   details       : string           — rich HTML body text
+ *   ctaButtons    : CTAButtonProps[] — up to 2 CTA buttons
+ *   showBorder    : boolean          — renders card border, default true
+ *   aspectRatio   : string           — media aspect ratio CSS value, default '16/9'
+ */
+
+import CTAButton from './CTAButton.astro';
+
+interface CTAButtonProps {
+  label:    string;
+  href:     string;
+  variant?: 'solid' | 'outline';
+  newTab?:  boolean;
+}
+
+interface Props {
+  imageUrl?:      string;
+  imageAlt?:      string;
+  videoUrl?:      string;
+  mediaPosition?: 'top' | 'bottom';
+  title?:         string;
+  details?:       string;
+  ctaButtons?:    CTAButtonProps[];
+  showBorder?:    boolean;
+  aspectRatio?:   string;
+}
+
+const {
+  imageUrl      = '',
+  imageAlt      = '',
+  videoUrl      = '',
+  mediaPosition = 'top',
+  title         = '',
+  details       = '',
+  ctaButtons    = [],
+  showBorder    = true,
+  aspectRatio   = '16/9',
+} = Astro.props;
+
+const hasMedia = !!(imageUrl || videoUrl);
+
+// Determine if videoUrl is an embed (YouTube/Vimeo) or raw video
+const isEmbedVideo = videoUrl && (videoUrl.includes('youtube.com') || videoUrl.includes('vimeo.com'));
+const isDirectVideo = videoUrl && !isEmbedVideo;
+
+// Convert YouTube watch URL to embed URL
+function toEmbedUrl(url: string): string {
+  if (url.includes('youtube.com/watch?v=')) {
+    const id = new URL(url).searchParams.get('v');
+    return `https://www.youtube.com/embed/${id}`;
+  }
+  if (url.includes('youtu.be/')) {
+    const id = url.split('youtu.be/')[1]?.split('?')[0];
+    return `https://www.youtube.com/embed/${id}`;
+  }
+  return url;
+}
+
+const embedUrl = videoUrl ? toEmbedUrl(videoUrl) : '';
+---
+
+<article class:list={['card', showBorder && 'card--bordered']}>
+
+  <!-- Media: top position -->
+  {hasMedia && mediaPosition === 'top' && (
+    <div class="card__media" style={`aspect-ratio:${aspectRatio}`}>
+      {imageUrl && !videoUrl && (
+        <img src={imageUrl} alt={imageAlt} class="card__img" loading="lazy" decoding="async" />
+      )}
+      {isEmbedVideo && (
+        <iframe
+          src={embedUrl}
+          title={title || 'Video'}
+          class="card__video-embed"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
+      )}
+      {isDirectVideo && (
+        <video class="card__video" controls preload="metadata" playsinline>
+          <source src={videoUrl} />
+          Your browser does not support the video tag.
+        </video>
+      )}
+    </div>
+  )}
+
+  <!-- Body -->
+  <div class="card__body">
+    {title && <h3 class="card__title">{title}</h3>}
+    {details && <div class="rich-text card__details" set:html={details} />}
+
+    {ctaButtons.length > 0 && (
+      <div class="card__ctas">
+        {ctaButtons.map(btn => (
+          <CTAButton
+            label={btn.label}
+            href={btn.href}
+            variant={btn.variant ?? 'outline'}
+            newTab={btn.newTab}
+            size="sm"
+          />
+        ))}
+      </div>
+    )}
+  </div>
+
+  <!-- Media: bottom position -->
+  {hasMedia && mediaPosition === 'bottom' && (
+    <div class="card__media card__media--bottom" style={`aspect-ratio:${aspectRatio}`}>
+      {imageUrl && !videoUrl && (
+        <img src={imageUrl} alt={imageAlt} class="card__img" loading="lazy" decoding="async" />
+      )}
+      {isEmbedVideo && (
+        <iframe
+          src={embedUrl}
+          title={title || 'Video'}
+          class="card__video-embed"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy"
+        ></iframe>
+      )}
+      {isDirectVideo && (
+        <video class="card__video" controls preload="metadata" playsinline>
+          <source src={videoUrl} />
+          Your browser does not support the video tag.
+        </video>
+      )}
+    </div>
+  )}
+</article>
+
+<style>
+.card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-brand-white);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  height: 100%;
+  transition: box-shadow var(--transition-base), transform var(--transition-base);
+}
+
+.card--bordered {
+  border: 1px solid var(--color-gray-200);
+  box-shadow: var(--shadow-card);
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Media */
+.card__media {
+  width: 100%;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  background: var(--color-gray-100);
+}
+
+.card__media--bottom {
+  margin-top: auto;
+}
+
+.card__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform var(--transition-slow);
+}
+.card:hover .card__img {
+  transform: scale(1.03);
+}
+
+.card__video-embed,
+.card__video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* Body */
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  flex: 1;
+}
+
+.card__title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-brand-black);
+  line-height: var(--line-height-snug);
+}
+
+.card__details {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  flex: 1;
+}
+
+.card__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-2);
+}
+</style>

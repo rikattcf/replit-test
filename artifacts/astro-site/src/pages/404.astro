@@ -1,0 +1,44 @@
+---
+import Layout from '@/layouts/Layout.astro';
+---
+
+<Layout title="Page Not Found | Dexcom" description="The page you were looking for could not be found.">
+  <section class="not-found section">
+    <div class="container not-found__inner">
+      <span class="eyebrow">404</span>
+      <h1 class="not-found__title">Page not found</h1>
+      <p class="not-found__body">Sorry, we couldn't find the page you were looking for. It may have moved or been removed.</p>
+      <a href="/" class="cta-btn cta-btn--solid cta-btn--lg">Back to home</a>
+    </div>
+  </section>
+</Layout>
+
+<style>
+.not-found { min-height: 60vh; display: flex; align-items: center; }
+.not-found__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  max-width: 560px;
+}
+.not-found__title {
+  font-size: clamp(var(--font-size-3xl), 5vw, var(--font-size-5xl));
+  color: var(--color-brand-black);
+}
+.not-found__body {
+  font-size: var(--font-size-lg);
+  color: var(--color-gray-500);
+  line-height: var(--line-height-loose);
+}
+.cta-btn {
+  display:inline-flex; align-items:center; font-family:var(--font-sans);
+  font-weight:var(--font-weight-bold); line-height:1; white-space:nowrap;
+  border-radius:var(--radius-full); border:2px solid transparent;
+  cursor:pointer; text-decoration:none;
+  transition: background var(--transition-fast), transform var(--transition-fast);
+}
+.cta-btn--solid { background: var(--color-brand-green); border-color: var(--color-brand-green); color:#fff; }
+.cta-btn--solid:hover { background: var(--color-brand-green-dark); transform:translateY(-1px); }
+.cta-btn--lg   { font-size: var(--font-size-base); padding:.8em 2em; }
+</style>

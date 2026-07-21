@@ -1,0 +1,124 @@
+---
+/**
+ * Grid — responsive column grid container.
+ *
+ * Props
+ *   columns       : 1–5       — number of columns at desktop, default 3
+ *   gap           : string    — CSS gap value, default uses design token spacing
+ *   equalHeight   : boolean   — stretch all child cards to same height, default true
+ *   sectionTitle  : string    — optional heading above the grid
+ *   sectionEyebrow: string    — optional eyebrow above the heading
+ *   bgColor       : string    — optional section background override
+ *
+ * Usage: wrap <Card /> components in the default slot.
+ */
+
+interface Props {
+  columns?:        1 | 2 | 3 | 4 | 5;
+  gap?:            string;
+  equalHeight?:    boolean;
+  sectionTitle?:   string;
+  sectionEyebrow?: string;
+  bgColor?:        string;
+}
+
+const {
+  columns       = 3,
+  gap           = '',
+  equalHeight   = true,
+  sectionTitle  = '',
+  sectionEyebrow = '',
+  bgColor       = '',
+} = Astro.props;
+
+// Map column count to responsive min-width breakpoints
+const colMinWidths: Record<number, string> = {
+  1: '100%',
+  2: 'min(100%, 480px)',
+  3: 'min(100%, 300px)',
+  4: 'min(100%, 240px)',
+  5: 'min(100%, 200px)',
+};
+const minWidth = colMinWidths[columns] ?? colMinWidths[3];
+---
+
+<section
+  class="grid-section section"
+  style={bgColor ? `background-color:${bgColor}` : ''}
+  aria-label={sectionTitle || undefined}
+>
+  <div class="container">
+
+    {(sectionEyebrow || sectionTitle) && (
+      <div class="grid-section__header">
+        {sectionEyebrow && <span class="eyebrow">{sectionEyebrow}</span>}
+        {sectionTitle   && <h2 class="grid-section__heading">{sectionTitle}</h2>}
+      </div>
+    )}
+
+    <div
+      class:list={['grid-layout', equalHeight && 'grid-layout--equal']}
+      style={[
+        `--cols: ${columns}`,
+        `--col-min: ${minWidth}`,
+        gap ? `--gap: ${gap}` : '',
+      ].filter(Boolean).join(';')}
+    >
+      <slot />
+    </div>
+
+  </div>
+</section>
+
+<style>
+.grid-section__header {
+  margin-bottom: var(--space-10);
+  text-align: center;
+}
+
+.grid-section__heading {
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl));
+  color: var(--color-brand-black);
+}
+
+/* Auto-fit responsive grid */
+.grid-layout {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(var(--col-min, 300px), 1fr)
+  );
+  gap: var(--gap, var(--space-8));
+  /* Enforce maximum column count */
+  max-width: 100%;
+}
+
+/* Equal-height card rows */
+.grid-layout--equal > * {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Force exact column count at desktop */
+@media (min-width: 900px) {
+  .grid-layout {
+    grid-template-columns: repeat(var(--cols, 3), 1fr);
+  }
+}
+
+/* 2-col below 640px for 3-5 col grids */
+@media (max-width: 640px) {
+  .grid-layout[style*="--cols: 3"],
+  .grid-layout[style*="--cols: 4"],
+  .grid-layout[style*="--cols: 5"] {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 1-col on very small screens */
+@media (max-width: 400px) {
+  .grid-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+</style>

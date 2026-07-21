@@ -1,0 +1,432 @@
+---
+/**
+ * MegaMenu — horizontal nav with 3 top-level items, each with a 3-item dropdown.
+ * Driven by the `navItems` array below; swap for Storyblok data if needed.
+ * Fully keyboard and screen-reader accessible.
+ */
+
+interface NavSubItem {
+  label: string;
+  href: string;
+  description?: string;
+}
+
+interface NavItem {
+  label: string;
+  href?: string;
+  children: NavSubItem[];
+}
+
+const navItems: NavItem[] = [
+  {
+    label: 'Products',
+    children: [
+      { label: 'Dexcom G7',    href: '/products/g7',    description: 'Our most accurate CGM sensor' },
+      { label: 'Dexcom G6',    href: '/products/g6',    description: 'Proven continuous monitoring' },
+      { label: 'Apps & Tools', href: '/products/apps',  description: 'Manage your data anywhere' },
+    ],
+  },
+  {
+    label: 'Patient Support',
+    children: [
+      { label: 'Getting Started',    href: '/support/getting-started',    description: 'New to CGM? Start here' },
+      { label: 'Insurance & Access', href: '/support/insurance',          description: 'Coverage options explained' },
+      { label: 'Help Centre',        href: '/support/help',               description: 'FAQs and troubleshooting' },
+    ],
+  },
+  {
+    label: 'Healthcare Professionals',
+    children: [
+      { label: 'Clinical Resources',  href: '/hcp/resources',   description: 'Evidence and guidelines' },
+      { label: 'Patient Management',  href: '/hcp/management',  description: 'Dexcom Clarity platform' },
+      { label: 'Order & Prescribe',   href: '/hcp/order',       description: 'Prescribing information' },
+    ],
+  },
+];
+---
+
+<header class="site-header" role="banner">
+  <div class="container site-header__inner">
+
+    <!-- Logo -->
+    <a href="/" class="site-header__logo" aria-label="Dexcom home">
+      <svg width="120" height="32" viewBox="0 0 120 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <text x="0" y="26" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif"
+              font-size="28" font-weight="700" fill="#00AA55">dexcom</text>
+      </svg>
+    </a>
+
+    <!-- Primary Navigation -->
+    <nav class="mega-nav" aria-label="Main navigation">
+      <ul class="mega-nav__list" role="list">
+        {navItems.map((item, i) => (
+          <li class="mega-nav__item" key={i}>
+            <button
+              class="mega-nav__trigger"
+              aria-expanded="false"
+              aria-controls={`dropdown-${i}`}
+              type="button"
+            >
+              {item.label}
+              <svg class="mega-nav__chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+
+            <!-- Dropdown panel -->
+            <div
+              class="mega-nav__dropdown"
+              id={`dropdown-${i}`}
+              role="region"
+              aria-label={`${item.label} submenu`}
+              hidden
+            >
+              <div class="mega-nav__dropdown-inner">
+                <ul class="mega-nav__sub-list" role="list">
+                  {item.children.map((child, j) => (
+                    <li key={j}>
+                      <a href={child.href} class="mega-nav__sub-link">
+                        <span class="mega-nav__sub-label">{child.label}</span>
+                        {child.description && (
+                          <span class="mega-nav__sub-desc">{child.description}</span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <!-- CTA + controls -->
+    <div class="site-header__actions">
+      <a href="/buy" class="header-cta-btn">Buy now</a>
+      <button class="icon-btn" aria-label="Search" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+      </button>
+      <button class="icon-btn" aria-label="My account" type="button">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+        </svg>
+      </button>
+
+      <!-- Mobile hamburger -->
+      <button class="hamburger-btn" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu overlay -->
+  <div class="mobile-menu" id="mobile-menu" hidden aria-label="Mobile navigation">
+    <nav aria-label="Mobile main navigation">
+      {navItems.map((item, i) => (
+        <details class="mobile-menu__group" key={i}>
+          <summary class="mobile-menu__trigger">{item.label}</summary>
+          <ul class="mobile-menu__sub" role="list">
+            {item.children.map((child, j) => (
+              <li key={j}>
+                <a href={child.href} class="mobile-menu__link">{child.label}</a>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ))}
+      <a href="/buy" class="mobile-menu__cta">Buy now</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+/* ---- Header shell ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--color-brand-white);
+  border-bottom: 1px solid var(--color-gray-200);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  height: var(--nav-height);
+}
+
+.site-header__logo { flex-shrink: 0; }
+
+/* ---- Desktop nav ---- */
+.mega-nav { flex: 1; }
+
+.mega-nav__list {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.mega-nav__item { position: relative; }
+
+.mega-nav__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  font-family: var(--font-sans);
+  color: var(--color-brand-black);
+  background: none;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+.mega-nav__trigger:hover,
+.mega-nav__trigger[aria-expanded="true"] {
+  color: var(--color-brand-green);
+  background: var(--color-brand-green-light);
+}
+
+.mega-nav__chevron {
+  transition: transform var(--transition-fast);
+}
+.mega-nav__trigger[aria-expanded="true"] .mega-nav__chevron {
+  transform: rotate(180deg);
+}
+
+/* ---- Dropdown panel ---- */
+.mega-nav__dropdown {
+  position: absolute;
+  top: calc(100% + var(--space-3));
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 260px;
+  background: var(--color-brand-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: dropdownIn 200ms ease both;
+}
+
+.mega-nav__dropdown[hidden] { display: none; }
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.mega-nav__dropdown-inner { padding: var(--space-3); }
+
+.mega-nav__sub-list { display: flex; flex-direction: column; gap: var(--space-1); }
+
+.mega-nav__sub-link {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+.mega-nav__sub-link:hover { background: var(--color-brand-green-light); }
+
+.mega-nav__sub-label {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-brand-black);
+}
+.mega-nav__sub-link:hover .mega-nav__sub-label { color: var(--color-brand-green-dark); }
+
+.mega-nav__sub-desc {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
+/* ---- Header actions ---- */
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+.header-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--space-2) var(--space-6);
+  background: var(--color-brand-green);
+  color: var(--color-brand-white);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-sans);
+  border-radius: var(--radius-full);
+  transition: background var(--transition-fast), transform var(--transition-fast);
+  white-space: nowrap;
+}
+.header-cta-btn:hover {
+  background: var(--color-brand-green-dark);
+  transform: translateY(-1px);
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  color: var(--color-brand-black);
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+.icon-btn:hover {
+  background: var(--color-brand-green-light);
+  color: var(--color-brand-green-dark);
+}
+
+/* ---- Hamburger ---- */
+.hamburger-btn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 40px;
+  height: 40px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: var(--space-2);
+  border-radius: var(--radius-md);
+}
+.hamburger-btn span {
+  display: block;
+  height: 2px;
+  background: var(--color-brand-black);
+  border-radius: 2px;
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+.hamburger-btn[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-btn[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.hamburger-btn[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+/* ---- Mobile menu ---- */
+.mobile-menu {
+  background: var(--color-brand-white);
+  border-top: 1px solid var(--color-gray-200);
+  padding: var(--space-4) var(--container-pad) var(--space-8);
+  max-height: calc(100vh - var(--nav-height));
+  overflow-y: auto;
+}
+.mobile-menu[hidden] { display: none; }
+
+.mobile-menu__group { border-bottom: 1px solid var(--color-gray-200); }
+
+.mobile-menu__trigger {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4) 0;
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  list-style: none;
+}
+.mobile-menu__trigger::-webkit-details-marker { display: none; }
+
+.mobile-menu__sub {
+  padding: 0 0 var(--space-4) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.mobile-menu__link {
+  font-size: var(--font-size-sm);
+  color: var(--color-gray-600);
+  transition: color var(--transition-fast);
+}
+.mobile-menu__link:hover { color: var(--color-brand-green); }
+
+.mobile-menu__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  background: var(--color-brand-green);
+  color: white;
+  font-weight: var(--font-weight-bold);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-base);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+  .mega-nav { display: none; }
+  .hamburger-btn { display: flex; }
+  .icon-btn:not(.hamburger-btn) { display: none; }
+  .header-cta-btn { display: none; }
+}
+</style>
+
+<script>
+// Keyboard + click accessible mega menu
+const triggers = document.querySelectorAll<HTMLButtonElement>('.mega-nav__trigger');
+
+function closeAll() {
+  triggers.forEach(t => {
+    t.setAttribute('aria-expanded', 'false');
+    const id = t.getAttribute('aria-controls');
+    if (id) document.getElementById(id)?.setAttribute('hidden', '');
+  });
+}
+
+triggers.forEach(trigger => {
+  trigger.addEventListener('click', () => {
+    const expanded = trigger.getAttribute('aria-expanded') === 'true';
+    closeAll();
+    if (!expanded) {
+      trigger.setAttribute('aria-expanded', 'true');
+      const id = trigger.getAttribute('aria-controls');
+      if (id) document.getElementById(id)?.removeAttribute('hidden');
+    }
+  });
+});
+
+// Close when clicking outside
+document.addEventListener('click', e => {
+  if (!(e.target as Element).closest('.mega-nav__item')) closeAll();
+});
+
+// Escape key closes
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeAll();
+    (document.activeElement as HTMLElement)?.blur();
+  }
+});
+
+// Mobile hamburger
+const hamburger = document.querySelector<HTMLButtonElement>('.hamburger-btn');
+const mobileMenu = document.getElementById('mobile-menu');
+
+hamburger?.addEventListener('click', () => {
+  const open = hamburger.getAttribute('aria-expanded') === 'true';
+  hamburger.setAttribute('aria-expanded', String(!open));
+  hamburger.setAttribute('aria-label', open ? 'Open menu' : 'Close menu');
+  if (open) mobileMenu?.setAttribute('hidden', '');
+  else mobileMenu?.removeAttribute('hidden');
+});
+</script>

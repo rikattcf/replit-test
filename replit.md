@@ -1,6 +1,6 @@
-# [Project name]
+# Dexcom-style Astro + Storyblok Site
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A production-ready CMS-driven website built with Astro, Storyblok, and Web Awesome Pro — styled to match dexcom.com/en-gb. Deployed to Vercel via GitHub.
 
 ## Run & Operate
 

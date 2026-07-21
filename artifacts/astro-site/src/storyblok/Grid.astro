@@ -1,0 +1,38 @@
+---
+/**
+ * Storyblok bridge for Grid block.
+ */
+import { storyblokEditable } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import GridComponent from '@/components/blocks/Grid.astro';
+
+interface Props {
+  blok: {
+    columns?:         '1' | '2' | '3' | '4' | '5';
+    items?:           any[];
+    section_title?:   string;
+    section_eyebrow?: string;
+    bg_color?:        string;
+    [key: string]:    any;
+  };
+}
+
+const { blok } = Astro.props;
+
+const colMap: Record<string, 1|2|3|4|5> = {
+  '1':1, '2':2, '3':3, '4':4, '5':5,
+};
+---
+
+<div {...storyblokEditable(blok)}>
+  <GridComponent
+    columns={colMap[blok.columns ?? '3'] ?? 3}
+    sectionTitle={blok.section_title}
+    sectionEyebrow={blok.section_eyebrow}
+    bgColor={blok.bg_color}
+  >
+    {(blok.items ?? []).map((item: any) => (
+      <StoryblokComponent blok={item} />
+    ))}
+  </GridComponent>
+</div>

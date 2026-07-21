@@ -1,0 +1,63 @@
+---
+/**
+ * Storyblok bridge for Hero block.
+ * Maps Storyblok field names → Hero component props.
+ */
+import { storyblokEditable } from '@storyblok/astro';
+import HeroComponent from '@/components/blocks/Hero.astro';
+
+interface StoryblokCTA {
+  label:   string;
+  link:    { url: string; cached_url?: string };
+  variant?: 'solid' | 'outline';
+  open_in_new_tab?: boolean;
+}
+
+interface Props {
+  blok: {
+    eyebrow?:        string;
+    heading_tag?:    'h1' | 'h2' | 'h3' | 'h4';
+    title:           string;
+    details?:        string;
+    image?:          { filename: string; alt?: string };
+    image_position?: 'left' | 'right';
+    image_width?:    '25' | '33' | '50' | '66';
+    cta_buttons?:    StoryblokCTA[];
+    bg_color?:       string;
+    full_height?:    boolean;
+    [key: string]:   any;
+  };
+}
+
+const { blok } = Astro.props;
+
+const imageWidthMap: Record<string, 25 | 33 | 50 | 66> = {
+  '25': 25,
+  '33': 33,
+  '50': 50,
+  '66': 66,
+};
+
+const ctaButtons = (blok.cta_buttons ?? []).map((btn: StoryblokCTA) => ({
+  label:   btn.label,
+  href:    btn.link?.url || btn.link?.cached_url || '#',
+  variant: btn.variant ?? 'solid',
+  newTab:  btn.open_in_new_tab ?? false,
+}));
+---
+
+<div {...storyblokEditable(blok)}>
+  <HeroComponent
+    eyebrow={blok.eyebrow}
+    headingTag={blok.heading_tag ?? 'h1'}
+    title={blok.title}
+    details={blok.details}
+    imageUrl={blok.image?.filename ?? ''}
+    imageAlt={blok.image?.alt ?? ''}
+    imagePosition={blok.image_position ?? 'right'}
+    imageWidth={imageWidthMap[blok.image_width ?? '50'] ?? 50}
+    ctaButtons={ctaButtons}
+    bgColor={blok.bg_color}
+    fullHeight={blok.full_height ?? false}
+  />
+</div>

@@ -1,0 +1,121 @@
+---
+/**
+ * CTAButton — standalone button block, also embedded in Hero / TextArea / Card.
+ *
+ * Props
+ *   label    : string            — button text
+ *   href     : string            — destination URL
+ *   variant  : 'solid'|'outline' — solid = green filled (primary), outline = white fill with green border (secondary)
+ *   size     : 'sm'|'md'|'lg'   — default 'md'
+ *   newTab   : boolean           — open in new tab, default false
+ *   disabled : boolean           — visually disabled, default false
+ */
+
+interface Props {
+  label:    string;
+  href?:    string;
+  variant?: 'solid' | 'outline';
+  size?:    'sm' | 'md' | 'lg';
+  newTab?:  boolean;
+  disabled?: boolean;
+  class?:   string;
+}
+
+const {
+  label,
+  href    = '#',
+  variant = 'solid',
+  size    = 'md',
+  newTab  = false,
+  disabled = false,
+  class: extraClass = '',
+} = Astro.props;
+
+const rel    = newTab ? 'noopener noreferrer' : undefined;
+const target = newTab ? '_blank' : undefined;
+const ariaCurrent = disabled ? 'false' : undefined;
+const classes = ['cta-btn', `cta-btn--${variant}`, `cta-btn--${size}`, extraClass].filter(Boolean).join(' ');
+---
+
+{disabled
+  ? <span class={classes} aria-disabled="true" role="link">{label}</span>
+  : <a href={href} class={classes} target={target} rel={rel}>{label}{newTab && <span class="sr-only"> (opens in a new tab)</span>}</a>
+}
+
+<style>
+.cta-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-family: var(--font-sans);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+  white-space: nowrap;
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background   var(--transition-fast),
+    color        var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow   var(--transition-fast),
+    transform    var(--transition-fast);
+}
+
+/* --- Sizes --- */
+.cta-btn--sm {
+  font-size: var(--font-size-xs);
+  padding: 0.5em 1.25em;
+}
+.cta-btn--md {
+  font-size: var(--font-size-sm);
+  padding: 0.7em 1.75em;
+}
+.cta-btn--lg {
+  font-size: var(--font-size-base);
+  padding: 0.8em 2em;
+}
+
+/* --- Solid (primary) --- */
+.cta-btn--solid {
+  background-color: var(--color-brand-green);
+  border-color:     var(--color-brand-green);
+  color:            var(--color-brand-white);
+  box-shadow:       0 2px 8px rgba(0,170,85,.25);
+}
+.cta-btn--solid:hover:not([aria-disabled="true"]) {
+  background-color: var(--color-brand-green-dark);
+  border-color:     var(--color-brand-green-dark);
+  transform:        translateY(-1px);
+  box-shadow:       0 4px 16px rgba(0,170,85,.35);
+}
+.cta-btn--solid:active:not([aria-disabled="true"]) {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0,170,85,.2);
+}
+
+/* --- Outline (secondary) --- */
+.cta-btn--outline {
+  background-color: var(--color-brand-white);
+  border-color:     var(--color-brand-green);
+  color:            var(--color-brand-green);
+}
+.cta-btn--outline:hover:not([aria-disabled="true"]) {
+  background-color: var(--color-brand-green-light);
+  border-color:     var(--color-brand-green-dark);
+  color:            var(--color-brand-green-dark);
+  transform:        translateY(-1px);
+}
+.cta-btn--outline:active:not([aria-disabled="true"]) {
+  transform: translateY(0);
+}
+
+/* --- Disabled state --- */
+.cta-btn[aria-disabled="true"] {
+  opacity:        0.5;
+  cursor:         not-allowed;
+  pointer-events: none;
+}
+</style>

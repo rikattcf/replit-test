@@ -1,0 +1,37 @@
+---
+/**
+ * Dynamic catch-all route — loads any Storyblok story by its slug.
+ * 404s gracefully if the story does not exist.
+ */
+import { useStoryblokApi } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import Layout from '@/layouts/Layout.astro';
+
+const { slug } = Astro.params;
+const storySlug = slug || 'home';
+
+let story: any = null;
+let notFound = false;
+
+try {
+  const storyblokApi = useStoryblokApi();
+  const { data } = await storyblokApi.get(`cdn/stories/${storySlug}`, {
+    version: import.meta.env.IS_PRODUCTION === 'true' ? 'published' : 'draft',
+    resolve_links: 'url',
+  });
+  story = data.story;
+} catch (_e) {
+  notFound = true;
+}
+
+if (notFound) {
+  return Astro.redirect('/404', 404);
+}
+---
+
+<Layout
+  title={story.content?.seo_title  ?? story.name}
+  description={story.content?.seo_description ?? ''}
+>
+  <StoryblokComponent blok={story.content} />
+</Layout>

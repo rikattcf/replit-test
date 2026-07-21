@@ -1,0 +1,55 @@
+---
+/**
+ * Storyblok bridge for Card block.
+ */
+import { storyblokEditable } from '@storyblok/astro';
+import StoryblokComponent from '@storyblok/astro/StoryblokComponent.astro';
+import CardComponent from '@/components/blocks/Card.astro';
+import { renderRichText } from '@storyblok/astro';
+
+interface StoryblokCTA {
+  label:            string;
+  link:             { url: string; cached_url?: string };
+  variant?:         'solid' | 'outline';
+  open_in_new_tab?: boolean;
+}
+
+interface Props {
+  blok: {
+    image?:           { filename: string; alt?: string };
+    video_url?:       string;
+    media_position?:  'top' | 'bottom';
+    title?:           string;
+    details?:         any;   // richtext field
+    cta_buttons?:     StoryblokCTA[];
+    show_border?:     boolean;
+    aspect_ratio?:    string;
+    [key: string]:    any;
+  };
+}
+
+const { blok } = Astro.props;
+
+const details = blok.details ? renderRichText(blok.details) : '';
+
+const ctaButtons = (blok.cta_buttons ?? []).map((btn: StoryblokCTA) => ({
+  label:   btn.label,
+  href:    btn.link?.url || btn.link?.cached_url || '#',
+  variant: btn.variant ?? 'outline',
+  newTab:  btn.open_in_new_tab ?? false,
+}));
+---
+
+<div {...storyblokEditable(blok)} style="display:contents">
+  <CardComponent
+    imageUrl={blok.image?.filename ?? ''}
+    imageAlt={blok.image?.alt ?? ''}
+    videoUrl={blok.video_url}
+    mediaPosition={blok.media_position ?? 'top'}
+    title={blok.title}
+    details={details}
+    ctaButtons={ctaButtons}
+    showBorder={blok.show_border ?? true}
+    aspectRatio={blok.aspect_ratio ?? '16/9'}
+  />
+</div>

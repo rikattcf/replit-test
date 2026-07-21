@@ -1,0 +1,73 @@
+---
+import MegaMenu from '@/components/navigation/MegaMenu.astro';
+import Footer from '@/components/footer/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  ogImage?: string;
+}
+
+const {
+  title = 'Dexcom | Continuous Glucose Monitoring',
+  description = 'Better manage your diabetes with Dexcom CGM technology.',
+  ogImage = '/og-default.jpg',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const waKitCode = import.meta.env.VITE_WA_KIT_CODE;
+---
+
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+  <link rel="canonical" href={canonicalURL} />
+
+  <!-- Open Graph -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content={canonicalURL} />
+  <meta property="og:title"       content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:image"       content={ogImage} />
+  <meta name="twitter:card"       content="summary_large_image" />
+
+  <title>{title}</title>
+
+  <!-- Web Awesome Pro (Font Awesome Kit) -->
+  <!-- If you have a FA Kit code, replace the CDN line below with your kit -->
+  {waKitCode
+    ? <script src={`https://kit.fontawesome.com/${waKitCode}.js`} crossorigin="anonymous" is:inline></script>
+    : null
+  }
+
+  <!-- Web Awesome CDN (core components) -->
+  <link
+    rel="stylesheet"
+    href="https://early.webawesome.com/webawesome@2.0.0-alpha.12/dist/styles/webawesome.css"
+  />
+  <script
+    type="module"
+    src="https://early.webawesome.com/webawesome@2.0.0-alpha.12/dist/webawesome.loader.js"
+    is:inline
+  ></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+
+<body>
+  <a href="#main-content" class="skip-link">Skip to content</a>
+
+  <MegaMenu />
+
+  <main id="main-content">
+    <slot />
+  </main>
+
+  <Footer />
+</body>
+</html>

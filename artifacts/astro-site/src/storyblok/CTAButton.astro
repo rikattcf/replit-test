@@ -1,0 +1,30 @@
+---
+/**
+ * Storyblok bridge for standalone CTA Button block.
+ */
+import { storyblokEditable } from '@storyblok/astro';
+import CTAButtonComponent from '@/components/blocks/CTAButton.astro';
+
+interface Props {
+  blok: {
+    label:             string;
+    link:              { url: string; cached_url?: string };
+    variant?:          'solid' | 'outline';
+    size?:             'sm' | 'md' | 'lg';
+    open_in_new_tab?:  boolean;
+    [key: string]:     any;
+  };
+}
+
+const { blok } = Astro.props;
+---
+
+<div {...storyblokEditable(blok)} style="display:inline-block">
+  <CTAButtonComponent
+    label={blok.label}
+    href={blok.link?.url || blok.link?.cached_url || '#'}
+    variant={blok.variant ?? 'solid'}
+    size={blok.size ?? 'md'}
+    newTab={blok.open_in_new_tab ?? false}
+  />
+</div>

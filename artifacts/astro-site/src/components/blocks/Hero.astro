@@ -1,0 +1,219 @@
+---
+/**
+ * Hero — two-column layout: text column + image column.
+ *
+ * Props
+ *   eyebrow       : string               — uppercase label above title
+ *   headingTag    : 'h1'|'h2'|'h3'|'h4' — default 'h1'
+ *   title         : string               — main headline
+ *   details       : string               — rich HTML body text
+ *   imageUrl      : string               — image src
+ *   imageAlt      : string               — alt text (required for accessibility)
+ *   imagePosition : 'left'|'right'       — default 'right'
+ *   imageWidth    : 25|33|50|66          — % of row width, default 50
+ *   ctaButtons    : CTAButtonProps[]     — array of up to 2 CTA buttons
+ *   bgColor       : string               — optional background colour override
+ *   fullHeight    : boolean              — true = min-height 80vh (hero-above-fold feel)
+ */
+
+import CTAButton from './CTAButton.astro';
+
+interface CTAButtonProps {
+  label:   string;
+  href:    string;
+  variant?: 'solid' | 'outline';
+  newTab?:  boolean;
+}
+
+interface Props {
+  eyebrow?:       string;
+  headingTag?:    'h1' | 'h2' | 'h3' | 'h4';
+  title:          string;
+  details?:       string;
+  imageUrl?:      string;
+  imageAlt?:      string;
+  imagePosition?: 'left' | 'right';
+  imageWidth?:    25 | 33 | 50 | 66;
+  ctaButtons?:    CTAButtonProps[];
+  bgColor?:       string;
+  fullHeight?:    boolean;
+}
+
+const {
+  eyebrow       = '',
+  headingTag    = 'h1',
+  title,
+  details       = '',
+  imageUrl      = '',
+  imageAlt      = '',
+  imagePosition = 'right',
+  imageWidth    = 50,
+  ctaButtons    = [],
+  bgColor       = '',
+  fullHeight    = false,
+} = Astro.props;
+
+const HeadingTag = headingTag;
+
+// Text column gets the remainder (100 - imageWidth) %
+// Expressed as CSS custom property on the element
+const textWidthPct  = 100 - imageWidth;
+
+const heroClasses = [
+  'hero',
+  `hero--img-${imagePosition}`,
+  fullHeight ? 'hero--full' : '',
+].filter(Boolean).join(' ');
+---
+
+<section
+  class={heroClasses}
+  style={bgColor ? `background-color:${bgColor}` : ''}
+  aria-label={title}
+>
+  <div class="container hero__inner" style={`--img-width:${imageWidth}%; --text-width:${textWidthPct}%`}>
+
+    <!-- Text column -->
+    <div class="hero__text" class:list={[imagePosition === 'right' ? 'order-1' : 'order-2']}>
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+
+      <HeadingTag class="hero__title">{title}</HeadingTag>
+
+      {details && (
+        <div class="rich-text hero__details" set:html={details} />
+      )}
+
+      {ctaButtons.length > 0 && (
+        <div class="hero__ctas">
+          {ctaButtons.map(btn => (
+            <CTAButton
+              label={btn.label}
+              href={btn.href}
+              variant={btn.variant ?? 'solid'}
+              newTab={btn.newTab}
+              size="lg"
+            />
+          ))}
+        </div>
+      )}
+    </div>
+
+    <!-- Image column -->
+    {imageUrl && (
+      <div class="hero__media" class:list={[imagePosition === 'right' ? 'order-2' : 'order-1']}>
+        <div class="hero__media-wrap">
+          <img
+            src={imageUrl}
+            alt={imageAlt}
+            class="hero__img"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<style>
+.hero {
+  background-color: var(--color-gray-50);
+  overflow: hidden;
+}
+
+.hero--full {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+}
+
+.hero__inner {
+  display: grid;
+  grid-template-columns: var(--text-width, 50%) var(--img-width, 50%);
+  gap: var(--space-12);
+  align-items: center;
+  padding-block: var(--space-16);
+}
+
+/* Column ordering */
+.order-1 { order: 1; }
+.order-2 { order: 2; }
+
+/* Text column */
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.hero__title {
+  color: var(--color-brand-black);
+}
+
+/* Highlight first word in title with brand green — Dexcom style */
+.hero__title :global(strong),
+.hero__title :global(em) {
+  color: var(--color-brand-green);
+  font-style: normal;
+}
+
+.hero__details {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-loose);
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-top: var(--space-2);
+}
+
+/* Image column */
+.hero__media {
+  position: relative;
+}
+
+.hero__media-wrap {
+  position: relative;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  aspect-ratio: 4 / 3;
+}
+
+.hero__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Responsive — single column below 768px */
+@media (max-width: 768px) {
+  .hero__inner {
+    grid-template-columns: 1fr !important;
+    gap: var(--space-8);
+    padding-block: var(--space-12);
+  }
+
+  /* On mobile always show text first */
+  .hero__text  { order: 1 !important; }
+  .hero__media { order: 2 !important; }
+
+  .hero__media-wrap {
+    aspect-ratio: 16 / 9;
+    border-radius: var(--radius-lg);
+  }
+
+  .hero--full {
+    min-height: unset;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero__ctas { flex-direction: column; }
+}
+</style>

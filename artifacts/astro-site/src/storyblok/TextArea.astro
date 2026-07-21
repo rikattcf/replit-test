@@ -1,0 +1,56 @@
+---
+/**
+ * Storyblok bridge for TextArea block.
+ */
+import { storyblokEditable, renderRichText } from '@storyblok/astro';
+import TextAreaComponent from '@/components/blocks/TextArea.astro';
+
+interface StoryblokCTA {
+  label:            string;
+  link:             { url: string; cached_url?: string };
+  variant?:         'solid' | 'outline';
+  open_in_new_tab?: boolean;
+}
+
+interface Props {
+  blok: {
+    title?:       string;
+    heading_tag?: 'h2' | 'h3' | 'h4';
+    content?:     any;    // richtext field
+    details?:     string;
+    cta_buttons?: StoryblokCTA[];
+    alignment?:   'left' | 'center' | 'right';
+    eyebrow?:     string;
+    max_width?:   string;
+    bg_color?:    string;
+    [key: string]: any;
+  };
+}
+
+const { blok } = Astro.props;
+
+const content = blok.content ? renderRichText(blok.content) : '';
+
+const ctaButtons = (blok.cta_buttons ?? [])
+  .slice(0, 2)
+  .map((btn: StoryblokCTA) => ({
+    label:   btn.label,
+    href:    btn.link?.url || btn.link?.cached_url || '#',
+    variant: btn.variant ?? 'solid',
+    newTab:  btn.open_in_new_tab ?? false,
+  }));
+---
+
+<div {...storyblokEditable(blok)}>
+  <TextAreaComponent
+    title={blok.title}
+    headingTag={blok.heading_tag ?? 'h2'}
+    content={content}
+    details={blok.details}
+    ctaButtons={ctaButtons}
+    alignment={blok.alignment ?? 'left'}
+    eyebrow={blok.eyebrow}
+    maxWidth={blok.max_width ?? '760px'}
+    bgColor={blok.bg_color}
+  />
+</div>

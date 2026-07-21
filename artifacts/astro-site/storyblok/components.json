@@ -1,0 +1,356 @@
+{
+  "components": [
+    {
+      "name": "page",
+      "display_name": "Page",
+      "schema": {
+        "body": {
+          "type": "bloks",
+          "restrict_components": true,
+          "component_whitelist": ["hero", "cta_button", "grid", "text_area"],
+          "pos": 0
+        },
+        "seo_title": {
+          "type": "text",
+          "display_name": "SEO Title",
+          "pos": 1
+        },
+        "seo_description": {
+          "type": "textarea",
+          "display_name": "SEO Description",
+          "pos": 2
+        }
+      },
+      "is_root": true,
+      "is_nestable": false,
+      "color": "#00AA55",
+      "icon": "block-document"
+    },
+
+    {
+      "name": "hero",
+      "display_name": "Hero",
+      "schema": {
+        "eyebrow": {
+          "type": "text",
+          "display_name": "Eyebrow Text",
+          "description": "Small uppercase label above the title",
+          "pos": 0
+        },
+        "heading_tag": {
+          "type": "option",
+          "display_name": "Heading Tag",
+          "default_value": "h1",
+          "options": [
+            {"value": "h1", "name": "H1"},
+            {"value": "h2", "name": "H2"},
+            {"value": "h3", "name": "H3"},
+            {"value": "h4", "name": "H4"}
+          ],
+          "pos": 1
+        },
+        "title": {
+          "type": "text",
+          "display_name": "Title",
+          "required": true,
+          "pos": 2
+        },
+        "details": {
+          "type": "textarea",
+          "display_name": "Details / Body Text",
+          "pos": 3
+        },
+        "image": {
+          "type": "asset",
+          "display_name": "Image",
+          "filetypes": ["images"],
+          "pos": 4
+        },
+        "image_position": {
+          "type": "option",
+          "display_name": "Image Position",
+          "default_value": "right",
+          "options": [
+            {"value": "right", "name": "Right (default)"},
+            {"value": "left",  "name": "Left"}
+          ],
+          "pos": 5
+        },
+        "image_width": {
+          "type": "option",
+          "display_name": "Image Width",
+          "default_value": "50",
+          "description": "Percentage of the row width the image column takes",
+          "options": [
+            {"value": "25", "name": "25%"},
+            {"value": "33", "name": "33%"},
+            {"value": "50", "name": "50% (default)"},
+            {"value": "66", "name": "66%"}
+          ],
+          "pos": 6
+        },
+        "cta_buttons": {
+          "type": "bloks",
+          "display_name": "CTA Buttons",
+          "restrict_components": true,
+          "component_whitelist": ["cta_button"],
+          "maximum": 2,
+          "pos": 7
+        },
+        "bg_color": {
+          "type": "text",
+          "display_name": "Background Colour",
+          "description": "CSS colour value (e.g. #F8F9FA). Leave blank for default.",
+          "pos": 8
+        },
+        "full_height": {
+          "type": "boolean",
+          "display_name": "Full Viewport Height",
+          "default_value": false,
+          "pos": 9
+        }
+      },
+      "is_root": false,
+      "is_nestable": true,
+      "color": "#00AA55",
+      "icon": "block-image-text"
+    },
+
+    {
+      "name": "cta_button",
+      "display_name": "CTA Button",
+      "schema": {
+        "label": {
+          "type": "text",
+          "display_name": "Button Label",
+          "required": true,
+          "pos": 0
+        },
+        "link": {
+          "type": "multilink",
+          "display_name": "Link",
+          "pos": 1
+        },
+        "variant": {
+          "type": "option",
+          "display_name": "Button Style",
+          "default_value": "solid",
+          "options": [
+            {"value": "solid",   "name": "Solid / Primary (green fill)"},
+            {"value": "outline", "name": "Outline / Secondary (white fill, green border)"}
+          ],
+          "pos": 2
+        },
+        "size": {
+          "type": "option",
+          "display_name": "Size",
+          "default_value": "md",
+          "options": [
+            {"value": "sm", "name": "Small"},
+            {"value": "md", "name": "Medium (default)"},
+            {"value": "lg", "name": "Large"}
+          ],
+          "pos": 3
+        },
+        "open_in_new_tab": {
+          "type": "boolean",
+          "display_name": "Open in New Tab",
+          "default_value": false,
+          "pos": 4
+        }
+      },
+      "is_root": false,
+      "is_nestable": true,
+      "color": "#008F45",
+      "icon": "block-button"
+    },
+
+    {
+      "name": "grid",
+      "display_name": "Grid",
+      "schema": {
+        "section_eyebrow": {
+          "type": "text",
+          "display_name": "Section Eyebrow",
+          "pos": 0
+        },
+        "section_title": {
+          "type": "text",
+          "display_name": "Section Title",
+          "pos": 1
+        },
+        "columns": {
+          "type": "option",
+          "display_name": "Columns",
+          "default_value": "3",
+          "options": [
+            {"value": "1", "name": "1 column"},
+            {"value": "2", "name": "2 columns"},
+            {"value": "3", "name": "3 columns (default)"},
+            {"value": "4", "name": "4 columns"},
+            {"value": "5", "name": "5 columns"}
+          ],
+          "pos": 2
+        },
+        "items": {
+          "type": "bloks",
+          "display_name": "Items",
+          "restrict_components": true,
+          "component_whitelist": ["card"],
+          "pos": 3
+        },
+        "bg_color": {
+          "type": "text",
+          "display_name": "Background Colour",
+          "pos": 4
+        }
+      },
+      "is_root": false,
+      "is_nestable": true,
+      "color": "#00AA55",
+      "icon": "block-table"
+    },
+
+    {
+      "name": "card",
+      "display_name": "Card",
+      "schema": {
+        "image": {
+          "type": "asset",
+          "display_name": "Image",
+          "filetypes": ["images"],
+          "pos": 0
+        },
+        "video_url": {
+          "type": "text",
+          "display_name": "Video URL",
+          "description": "YouTube, Vimeo, or direct .mp4 URL (leave blank if using image)",
+          "pos": 1
+        },
+        "media_position": {
+          "type": "option",
+          "display_name": "Media Position",
+          "default_value": "top",
+          "options": [
+            {"value": "top",    "name": "Top (default)"},
+            {"value": "bottom", "name": "Bottom"}
+          ],
+          "pos": 2
+        },
+        "aspect_ratio": {
+          "type": "option",
+          "display_name": "Media Aspect Ratio",
+          "default_value": "16/9",
+          "options": [
+            {"value": "16/9",  "name": "16:9 (default)"},
+            {"value": "4/3",   "name": "4:3"},
+            {"value": "1/1",   "name": "Square"},
+            {"value": "3/4",   "name": "Portrait 3:4"}
+          ],
+          "pos": 3
+        },
+        "title": {
+          "type": "text",
+          "display_name": "Title",
+          "pos": 4
+        },
+        "details": {
+          "type": "richtext",
+          "display_name": "Details",
+          "pos": 5
+        },
+        "cta_buttons": {
+          "type": "bloks",
+          "display_name": "CTA Buttons",
+          "restrict_components": true,
+          "component_whitelist": ["cta_button"],
+          "maximum": 2,
+          "pos": 6
+        },
+        "show_border": {
+          "type": "boolean",
+          "display_name": "Show Card Border",
+          "default_value": true,
+          "pos": 7
+        }
+      },
+      "is_root": false,
+      "is_nestable": true,
+      "color": "#00AA55",
+      "icon": "block-image"
+    },
+
+    {
+      "name": "text_area",
+      "display_name": "Text Area",
+      "schema": {
+        "eyebrow": {
+          "type": "text",
+          "display_name": "Eyebrow",
+          "pos": 0
+        },
+        "title": {
+          "type": "text",
+          "display_name": "Title",
+          "pos": 1
+        },
+        "heading_tag": {
+          "type": "option",
+          "display_name": "Heading Tag",
+          "default_value": "h2",
+          "options": [
+            {"value": "h2", "name": "H2 (default)"},
+            {"value": "h3", "name": "H3"},
+            {"value": "h4", "name": "H4"}
+          ],
+          "pos": 2
+        },
+        "content": {
+          "type": "richtext",
+          "display_name": "Content",
+          "pos": 3
+        },
+        "details": {
+          "type": "textarea",
+          "display_name": "Details (secondary text)",
+          "pos": 4
+        },
+        "cta_buttons": {
+          "type": "bloks",
+          "display_name": "CTA Buttons (max 2)",
+          "restrict_components": true,
+          "component_whitelist": ["cta_button"],
+          "maximum": 2,
+          "pos": 5
+        },
+        "alignment": {
+          "type": "option",
+          "display_name": "Text Alignment",
+          "default_value": "left",
+          "options": [
+            {"value": "left",   "name": "Left (default)"},
+            {"value": "center", "name": "Centre"},
+            {"value": "right",  "name": "Right"}
+          ],
+          "pos": 6
+        },
+        "max_width": {
+          "type": "text",
+          "display_name": "Max Width",
+          "default_value": "760px",
+          "description": "CSS value, e.g. 760px or 60ch",
+          "pos": 7
+        },
+        "bg_color": {
+          "type": "text",
+          "display_name": "Background Colour",
+          "pos": 8
+        }
+      },
+      "is_root": false,
+      "is_nestable": true,
+      "color": "#00AA55",
+      "icon": "block-text"
+    }
+  ]
+}

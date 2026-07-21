@@ -1,0 +1,147 @@
+---
+/**
+ * TextArea — rich-text section with optional title, details, and CTA buttons.
+ *
+ * Props
+ *   title      : string                — optional heading above the rich text
+ *   headingTag : 'h2'|'h3'|'h4'       — which tag to render the title as, default 'h2'
+ *   content    : string                — rich HTML body (from Storyblok renderRichText)
+ *   details    : string                — secondary paragraph below main content (optional)
+ *   ctaButtons : CTAButtonProps[]      — up to 2 CTA buttons shown below content
+ *   alignment  : 'left'|'center'|'right' — text alignment, default 'left'
+ *   eyebrow    : string                — optional eyebrow label above the title
+ *   maxWidth   : string                — max-width of the text block, default '760px'
+ *   bgColor    : string                — optional background colour override
+ */
+
+import CTAButton from './CTAButton.astro';
+
+interface CTAButtonProps {
+  label:    string;
+  href:     string;
+  variant?: 'solid' | 'outline';
+  newTab?:  boolean;
+}
+
+interface Props {
+  title?:      string;
+  headingTag?: 'h2' | 'h3' | 'h4';
+  content?:    string;
+  details?:    string;
+  ctaButtons?: CTAButtonProps[];
+  alignment?:  'left' | 'center' | 'right';
+  eyebrow?:    string;
+  maxWidth?:   string;
+  bgColor?:    string;
+}
+
+const {
+  title      = '',
+  headingTag = 'h2',
+  content    = '',
+  details    = '',
+  ctaButtons = [],
+  alignment  = 'left',
+  eyebrow    = '',
+  maxWidth   = '760px',
+  bgColor    = '',
+} = Astro.props;
+
+// Limit to 2 CTA buttons
+const buttons = ctaButtons.slice(0, 2);
+
+const HeadingTag = headingTag;
+
+const alignClass = {
+  left:   'text-area--left',
+  center: 'text-area--center',
+  right:  'text-area--right',
+}[alignment];
+---
+
+<section
+  class:list={['text-area', 'section', alignClass]}
+  style={bgColor ? `background-color:${bgColor}` : ''}
+>
+  <div class="container">
+    <div class="text-area__inner" style={`max-width:${maxWidth}`}>
+
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+
+      {title && <HeadingTag class="text-area__title">{title}</HeadingTag>}
+
+      {content && (
+        <div class="rich-text text-area__content" set:html={content} />
+      )}
+
+      {details && (
+        <p class="text-area__details">{details}</p>
+      )}
+
+      {buttons.length > 0 && (
+        <div class="text-area__ctas">
+          {buttons.map(btn => (
+            <CTAButton
+              label={btn.label}
+              href={btn.href}
+              variant={btn.variant ?? 'solid'}
+              newTab={btn.newTab}
+              size="md"
+            />
+          ))}
+        </div>
+      )}
+
+    </div>
+  </div>
+</section>
+
+<style>
+.text-area { }
+
+/* Alignment variants */
+.text-area--left   .text-area__inner { margin-inline: 0; text-align: left; }
+.text-area--center .text-area__inner { margin-inline: auto; text-align: center; }
+.text-area--right  .text-area__inner { margin-inline: 0 0 0 auto; text-align: right; }
+
+.text-area__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  width: 100%;
+}
+
+.text-area__title {
+  font-size: clamp(var(--font-size-2xl), 3vw, var(--font-size-4xl));
+  line-height: var(--line-height-snug);
+  color: var(--color-brand-black);
+}
+
+.text-area__content {
+  color: var(--color-gray-600);
+  font-size: var(--font-size-lg);
+  line-height: var(--line-height-loose);
+}
+
+.text-area__details {
+  font-size: var(--font-size-base);
+  color: var(--color-gray-500);
+  line-height: var(--line-height-normal);
+}
+
+.text-area__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* Centre / right alignments */
+.text-area--center .text-area__ctas { justify-content: center; }
+.text-area--right  .text-area__ctas { justify-content: flex-end; }
+
+@media (max-width: 480px) {
+  .text-area__ctas { flex-direction: column; }
+  .text-area--center .text-area__ctas,
+  .text-area--right  .text-area__ctas { align-items: stretch; }
+}
+</style>
