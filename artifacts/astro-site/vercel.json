@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "env": {
-    "STORYBLOK_TOKEN": "@storyblok_token",
+    "STORYBLOK_TOKEN": "zFlNmVpO4FoUbO130aVYQgtt",
     "STORYBLOK_PUBLIC_TOKEN": "@storyblok_public_token",
     "STORYBLOK_SPACE_ID": "@storyblok_space_id"
   },
