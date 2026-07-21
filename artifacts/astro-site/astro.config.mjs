@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import storyblok from '@storyblok/astro';
+import { storyblok } from '@storyblok/astro';
 import vercel from '@astrojs/vercel/serverless';
 
 // https://astro.build/config

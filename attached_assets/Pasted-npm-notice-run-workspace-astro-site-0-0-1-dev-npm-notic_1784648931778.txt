@@ -1,0 +1,19 @@
+npm notice run @workspace/astro-site@0.0.1 dev
+npm notice run astro dev --port ${PORT:-4321} --host 0.0.0.0
+16:47:22 [vite] Error when evaluating SSR module C:\Users\richa\OneDrive\المستندات\Storyblok\dexcom-replit-custom\replit-test\artifacts\astro-site\astro.config.mjs: failed to import "@storyblok/astro"
+|- SyntaxError: [vite] The requested module '@storyblok/astro' does not provide an export named 'default'
+    at analyzeImportedModDifference (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:52102:15)
+    at nodeImport (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:53109:5)
+    at async ssrImport (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:52963:16)
+    at async eval (C:/Users/richa/OneDrive/المستندات/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/astro.config.mjs:4:31)
+    at async instantiateModule (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:53021:5)
+
+[astro] Unable to load your Astro config
+
+[vite] The requested module '@storyblok/astro' does not provide an export named 'default'
+  Location:
+    C:\Users\richa\OneDrive\المستندات\Storyblok\dexcom-replit-custom\replit-test\artifacts\astro-site\node_modules\vite\dist\node\chunks\dep-BK3b2jBa.js:52102:15
+  Stack trace:
+    at analyzeImportedModDifference (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:52102:15)
+    at async ssrImport (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:52963:16)
+    at async instantiateModule (file:///C:/Users/richa/OneDrive/%D8%A7%D9%84%D9%85%D8%B3%D8%AA%D9%86%D8%AF%D8%A7%D8%AA/Storyblok/dexcom-replit-custom/replit-test/artifacts/astro-site/node_modules/vite/dist/node/chunks/dep-BK3b2jBa.js:53021:5)
